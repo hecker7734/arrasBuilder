@@ -1,9 +1,6 @@
 const canvas = document.getElementById('tankCanvas');
 const ctx = canvas.getContext('2d');
-// Array to store undo barrels
-const undoStack = [];
-// Array to store redo undid barrels
-const redoStack = [];
+let undoStack = [];
 
 //************* THE UNFUN PART! *************\
 
@@ -118,26 +115,25 @@ function addBarrel() {
 
 function pushBarrel(barrel) {
   Tank.guns.push(barrel);
-  undoStack.push(() => {
-    Tank.guns.pop();
-    redoStack.push(barrel);
-  });
 }
 
-
-// Function to undo the last barrel push action
-function barrelundo() {
-  const undoAction = undoStack.pop();
-  if (undoAction) {
-    undoAction();
+function performAction(type) {
+  if(type == "undo") {
+    if (Tank.guns.length < 1) {
+      alert("Nothing to undo.")
+    } else {
+      undoStack.push(Tank.guns[Tank.guns.length - 1]) //save the gun into undo
+      Tank.guns.pop() //delete the barrel
+    }
   }
-}
 
-// Function to redo the last undone barrel push action
-function barrelredo() {
-  const redoAction = redoStack.pop();
-  if (redoAction) {
-    redoAction();
+  if(type == "redo") {
+    if (undoStack.length < 1) {
+      alert("Nothing to redo.")
+    } else {
+      Tank.guns.push(undoStack[undoStack.length - 1]) // get the undo value, add it
+      undoStack.pop() // delete the undo value
+    }
   }
 }
 
