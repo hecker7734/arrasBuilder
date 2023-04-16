@@ -1,6 +1,11 @@
 const canvas = document.getElementById('tankCanvas');
 const ctx = canvas.getContext('2d');
+// Array to store undo barrels
+const undoStack = [];
+// Array to store redo undid barrels
+const redoStack = [];
 
+//************* THE UNFUN PART! *************\
 
 const Tank = {
   body: {
@@ -19,43 +24,50 @@ const Tank = {
     x: 0,
     y: 0, // Offset gun position relative to body
     angle: 90, // Angle in degrees for gun rotation
-    firedelay: 0
+    firedelay: 0,
+    shootSettings:'combineStats([g.basic])',
+    type:'exports.bullet',
     },
   ],
 };
 
+
 function drawTank(context, x, y) {
-    // Draw guns
-    Tank.guns.forEach(gun => {
-      const gunX = x + Tank.body.size / 2 + gun.x - gun.width / 2;
-      const gunY = y - 18 + Tank.body.size / 2 + gun.y - gun.length;
-      const angleInRadians = gun.angle * Math.PI / 180;
-      context.save();
-      context.translate(gunX, gunY);
-      context.rotate(angleInRadians);
-      context.fillStyle = gun.fillColor;
-      context.strokeStyle = gun.borderColor;
-      context.lineWidth = gun.borderWidth;
-      context.beginPath();
-      context.rect(0, 0, gun.width, gun.length);
-      context.closePath();
-      context.fill();
-      context.stroke();
-      context.restore();
-    });
-  
-    // Draw tank body
-    const bodyX = x - Tank.body.size / 2;
-    const bodyY = y - Tank.body.size / 2;
-    context.fillStyle = Tank.body.fillColor;
-    context.strokeStyle = Tank.body.borderColor;
-    context.lineWidth = Tank.body.borderWidth;
+  // Draw guns
+  Tank.guns.forEach(gun => {
+    const gunX = x - gun.x
+    const gunY = y - gun.y
+    const angleInRadians = gun.angle * Math.PI / 180 * -1;
+    context.save();
+    context.translate(gunX, gunY);
+    context.rotate(angleInRadians);
+    context.fillStyle = gun.fillColor;
+    context.strokeStyle = gun.borderColor;
+    context.lineWidth = gun.borderWidth;
     context.beginPath();
-    context.arc(bodyX, bodyY, Tank.body.size / 2, 0, 2 * Math.PI);
+    context.rect(-gun.width / 2, 0, gun.width, gun.length); // Updated gunX calculation
     context.closePath();
     context.fill();
     context.stroke();
-  }
+    context.restore();
+  });
+
+  // Draw tank body
+  const bodyX = x
+  const bodyY = y
+  context.fillStyle = Tank.body.fillColor;
+  context.strokeStyle = Tank.body.borderColor;
+  context.lineWidth = Tank.body.borderWidth;
+  context.beginPath();
+  context.arc(bodyX, bodyY, Tank.body.size / 2, 0, 2 * Math.PI);
+  context.closePath();
+  context.fill();
+  context.stroke();
+}
+
+
+
+
   
   
 setInterval(function(){
@@ -89,16 +101,42 @@ function drawGrid() {
 //************* Arras Menu! *************\\
 function addBarrel() {
   const newBarrel = {
-    width: exreturn(0,"barrel"),
-    length: exreturn(1,"barrel"),
+    length: parseInt(exreturn(0,"barrel")),
+    width: parseInt(exreturn(1,"barrel")),
     fillColor: '#CCCCCC', /* no change */
     borderColor: '#888888', /* no change */
     borderWidth: 3, /*no change*/
-    x: exreturn(2,"barrel"),
-    y: exreturn(3,"barrel"),
-    angle: exreturn(4,"barrel"),
-    firedelay: exreturn(5,"barrel"),
+    x: parseInt(exreturn(2,"barrel")),
+    y: parseInt(exreturn(3,"barrel")),
+    angle: parseInt(exreturn(4,"barrel")),
+    firedelay: parseInt(exreturn(5,"barrel")),
   };
+  pushBarrel(newBarrel)
+}
+
+function pushBarrel(barrel) {
+  Tank.guns.push(barrel);
+  undoStack.push(() => {
+    Tank.guns.pop();
+    redoStack.push(barrel);
+  });
+}
+
+
+// Function to undo the last barrel push action
+function barrelundo() {
+  const undoAction = undoStack.pop();
+  if (undoAction) {
+    undoAction();
+  }
+}
+
+// Function to redo the last undone barrel push action
+function barrelredo() {
+  const redoAction = redoStack.pop();
+  if (redoAction) {
+    redoAction();
+  }
 }
 
 //DRAGGABLE STUFF
@@ -167,14 +205,21 @@ function exreturn(id,name) {
 }
 
 function exportcode() {
-  document.getElementsByClassName("export-properties")[0].value = exportTankDefinition(exreturn(1,"export"),exreturn(3,"export"),exreturn(2,"export"),Tank.guns)
+  document.getElementsByClassName("export-properties")[0].value = "";
+  document.getElementsByClassName("export-properties")[0].value = exportTankDefinition(exreturn(1,"export"),exreturn(3,"export"),exreturn(2,"export"),Tank.guns);
 }
 
 function exportTankDefinition(tankName, parent, label, guns) {
   let recon = [];
   guns.forEach((gun, index) => {
     const angle = gun.angle - 90;
-    const gunString = `{ POSITION: [${gun.length / 2}, ${gun.width / 2}, 1, ${gun.x}, ${gun.y}, ${angle}, ${gun.firedelay}], PROPERTIES: { SHOOT_SETTINGS: ${gun.shootSettings}, TYPE: ${gun.type}, STAT_CALCULATOR: ${gun.statCalculator} } }`;
+    const gunString = `{
+      POSITION: [${gun.length / 2}, ${gun.width / 2}, 1, ${gun.x / 2}, ${gun.y / 2}, ${angle}, ${gun.firedelay}],
+      PROPERTIES: {
+        SHOOT_SETTINGS: combineStats([g.basic]),
+        TYPE: ${gun.type},
+      }
+    }`;
     if (index < guns.length - 1) {
       recon.push(gunString + ',');
     } else {
@@ -184,11 +229,13 @@ function exportTankDefinition(tankName, parent, label, guns) {
 
   const gunsString = recon.join('\n');
 
-  return `exports.${tankName} = {
-    PARENT: [exports.genericTank],
+  const tankDefinition = `exports.${tankName} = {
+    PARENT: [exports.${parent}],
     LABEL: '${label}',
     GUNS: [
       ${gunsString}
     ]
   };`;
+
+  return tankDefinition;
 }
