@@ -1,0 +1,72 @@
+canvas {
+    border: 1px solid #000;
+    position: absolute;
+    right:1%;
+    border-radius:16px;
+}
+
+.rounded {
+    border: 2px;
+    border-radius: 16px;
+}
+
+.button {
+    color:white;
+    background-color:#66CCFF;
+    border-color:#6699CC;
+    width: 85px;
+    height: 30px;
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out,top 1s ease;
+    margin: 5px;
+}
+.button:hover {
+    color:white;
+    background-color:#7ed2fc;
+    border-color:#6699CC;
+    box-shadow: 0px 0px 20px rgba(102, 204, 255, 0.7);
+}
+.button:active {
+    color:rgb(214, 212, 212);
+    background-color:#6cb4d8;
+    border-color:#6699CC;
+    box-shadow: 0px 0px 20px rgba(90, 180, 224, 0.7);
+    transform: scale(0.95);
+}
+
+body {
+    background-image: linear-gradient(to bottom, #333333, #b1adad);
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Prevent background scrolling */
+}
+
+.menu {
+    position: absolute;
+    background-color: #333333;
+    border-color: #000000;
+    border-style: solid;
+    width: 120px;
+    user-select: none;
+}
+
+
+.seperator {
+    border: none; /* Remove default border */
+    height: 2px; /* Set height */
+    background-color: #000; /* Set background color */
+    margin: 10px 0; /* Set margin */
+}
+
+.centered-text {
+    text-align: center;
+}
+
+p{
+    color:white;
+}
+
+.menu[data-custom-ui="1"] {
+    left:15px
+}
+.menu[data-custom-ui="2"] {
+    left:150px
+}

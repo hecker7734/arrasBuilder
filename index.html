@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tank Drawing Example</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="tankCanvas" class="draggable" width="400" height="400"></canvas>
+        <div name="ui" class="draggable rounded menu centered-text" data-custom-ui="1">
+            <p>Arras Menu</p>
+            <hr class="rounded seperator">
+            <button class="rounded button obstructdrag" onclick="addBarrel();">Add Barrel</button>
+            <button class="rounded button obstructdrag" onclick="exportcode();">Export</button>
+        </div>
+        <div name="ui2" class="draggable rounded menu centered-text" data-custom-ui="2">
+            <p>Export Properties</p>
+            <hr class="rounded seperator">
+            <textarea class="obstructdrag rounded" style="resize: none; background-color: white; color: black; border: 2px black solid; width: calc(100% - 10px);" placeholder="export will appear here"></textarea>
+        </div>
+    </div>
+  <script src="script.js"></script>
+</body>
+</html>
