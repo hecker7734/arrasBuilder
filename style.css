@@ -63,6 +63,9 @@ body {
 p{
     color:white;
 }
+label{
+    color:white;
+}
 
 .menu[data-custom-ui="1"] {
     left:15px
@@ -70,4 +73,15 @@ p{
 .menu[data-custom-ui="2"] {
     left:150px;
     width: auto;
+}
+.menu[data-custom-ui="3"] {
+    left:400px;
+    width: 150px;
+}
+
+.inline-field input,
+.inline-field label {
+  display: inline-block;
+  margin-bottom: 0; /* I added this after I posted my reply */
+  vertical-align: middle; /* Fixes any weird issues in Firefox and IE */
 }

@@ -16,19 +16,19 @@ const Tank = {
     fillColor: '#999999',
     borderColor: '#666666',
     borderWidth: 2,
-    offsetX: 0,
-    offsetY: 0, // Offset gun position relative to body
-    angle: 90 // Angle in degrees for gun rotation
+    x: 0,
+    y: 0, // Offset gun position relative to body
+    angle: 90, // Angle in degrees for gun rotation
+    firedelay: 0
     },
-
   ],
 };
 
 function drawTank(context, x, y) {
     // Draw guns
     Tank.guns.forEach(gun => {
-      const gunX = x + Tank.body.size / 2 + gun.offsetX - gun.width / 2;
-      const gunY = y + Tank.body.size / 2 + gun.offsetY - gun.length;
+      const gunX = x + Tank.body.size / 2 + gun.x - gun.width / 2;
+      const gunY = y - 18 + Tank.body.size / 2 + gun.y - gun.length;
       const angleInRadians = gun.angle * Math.PI / 180;
       context.save();
       context.translate(gunX, gunY);
@@ -86,9 +86,19 @@ function drawGrid() {
     }
 }
 
-// Barrels and stuffs
+//************* Arras Menu! *************\\
 function addBarrel() {
-    
+  const newBarrel = {
+    width: exreturn(0,"barrel"),
+    length: exreturn(1,"barrel"),
+    fillColor: '#CCCCCC', /* no change */
+    borderColor: '#888888', /* no change */
+    borderWidth: 3, /*no change*/
+    x: exreturn(2,"barrel"),
+    y: exreturn(3,"barrel"),
+    angle: exreturn(4,"barrel"),
+    firedelay: exreturn(5,"barrel"),
+  };
 }
 
 //DRAGGABLE STUFF
@@ -151,17 +161,34 @@ class Draggable {
   });
 
 //export - step1
-function exreturn(id) {
-  return document.getElementsByClassName("export-properties")[id].value;
+function exreturn(id,name) {
+  cname = name + "-properties"
+  return document.getElementsByClassName(cname)[id].value;
 }
 
 function exportcode() {
-  document.getElementsByClassName("export-properties")[0].value = exportTankDefinition(exreturn(1),exreturn(3),exreturn(2),Tank.guns)
+  document.getElementsByClassName("export-properties")[0].value = exportTankDefinition(exreturn(1,"export"),exreturn(3,"export"),exreturn(2,"export"),Tank.guns)
 }
+
 function exportTankDefinition(tankName, parent, label, guns) {
-    return `exports.${tankName} = {
-      PARENT: [exports.${parent}],
-      LABEL: '${label}',
-      GUNS: ${JSON.stringify(guns)},
-    };`;
+  let recon = [];
+  guns.forEach((gun, index) => {
+    const angle = gun.angle - 90;
+    const gunString = `{ POSITION: [${gun.length / 2}, ${gun.width / 2}, 1, ${gun.x}, ${gun.y}, ${angle}, ${gun.firedelay}], PROPERTIES: { SHOOT_SETTINGS: ${gun.shootSettings}, TYPE: ${gun.type}, STAT_CALCULATOR: ${gun.statCalculator} } }`;
+    if (index < guns.length - 1) {
+      recon.push(gunString + ',');
+    } else {
+      recon.push(gunString);
+    }
+  });
+
+  const gunsString = recon.join('\n');
+
+  return `exports.${tankName} = {
+    PARENT: [exports.genericTank],
+    LABEL: '${label}',
+    GUNS: [
+      ${gunsString}
+    ]
+  };`;
 }
