@@ -11,44 +11,29 @@ const Tank = {
     borderColor: '#6699CC',
     borderWidth: 5
   },
-  guns: [
-    {
-    length: 40,
-    width: 15,
-    fillColor: '#999999',
-    borderColor: '#666666',
-    borderWidth: 2,
-    x: 0,
-    y: 0, // Offset gun position relative to body
-    angle: 90, // Angle in degrees for gun rotation
-    firedelay: 0,
-    shootSettings:'combineStats([g.basic])',
-    type:'exports.bullet',
-    },
-  ],
+  guns: []
 };
 
 
 function drawTank(context, x, y) {
   // Draw guns
-  Tank.guns.forEach(gun => {
-    const gunX = x - gun.x
-    const gunY = y - gun.y
-    const angleInRadians = gun.angle * Math.PI / 180 * -1;
-    context.save();
-    context.translate(gunX, gunY);
-    context.rotate(angleInRadians);
-    context.fillStyle = gun.fillColor;
-    context.strokeStyle = gun.borderColor;
-    context.lineWidth = gun.borderWidth;
-    context.beginPath();
-    context.rect(-gun.width / 2, 0, gun.width, gun.length); // Updated gunX calculation
-    context.closePath();
-    context.fill();
-    context.stroke();
-    context.restore();
-  });
-
+   Tank.guns.forEach(gun => {
+     const gunX = x - gun.x
+     const gunY = y - gun.y
+     const angleInRadians = gun.angle * Math.PI / 180 * -1;
+     context.save();
+     context.translate(gunX, gunY);
+     context.rotate(angleInRadians);
+     context.fillStyle = gun.fillColor;
+     context.strokeStyle = gun.borderColor;
+     context.lineWidth = gun.borderWidth;
+     context.beginPath();
+     context.rect(-gun.width / 2, 0, gun.width, gun.length); // Updated gunX calculation
+     context.closePath();
+     context.fill();
+     context.stroke();
+     context.restore();
+   });
   // Draw tank body
   const bodyX = x
   const bodyY = y
@@ -107,7 +92,7 @@ function addBarrel() {
     y: parseInt(exreturn(3,"barrel")),
     angle: parseInt(exreturn(4,"barrel")),
     firedelay: parseInt(exreturn(5,"barrel")),
-    type: "exports.bullet",
+    type: "exports." + exreturn(6,"barrel"),
     shootSettings:'combineStats([g.basic])',
   };
   pushBarrel(newBarrel)
