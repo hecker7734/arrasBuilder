@@ -151,13 +151,17 @@ class Draggable {
   });
 
 //export - step1
+function exreturn(id) {
+  return document.getElementsByClassName("export-properties")[id].value;
+}
+
 function exportcode() {
-    exportTankDefinition()
+  document.getElementsByClassName("export-properties")[0].value = exportTankDefinition(exreturn(1),exreturn(3),exreturn(2),Tank.guns)
 }
 function exportTankDefinition(tankName, parent, label, guns) {
     return `exports.${tankName} = {
-      PARENT: [${parent}],
+      PARENT: [exports.${parent}],
       LABEL: '${label}',
-      GUNS: [${guns}],
+      GUNS: ${JSON.stringify(guns)},
     };`;
 }

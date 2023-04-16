@@ -68,5 +68,6 @@ p{
     left:15px
 }
 .menu[data-custom-ui="2"] {
-    left:150px
+    left:150px;
+    width: auto;
 }
