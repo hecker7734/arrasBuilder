@@ -110,6 +110,8 @@ function addBarrel() {
     y: parseInt(exreturn(3,"barrel")),
     angle: parseInt(exreturn(4,"barrel")),
     firedelay: parseInt(exreturn(5,"barrel")),
+    type: "exports.bullet",
+    shootSettings:'combineStats([g.basic])',
   };
   pushBarrel(newBarrel)
 }
@@ -216,7 +218,7 @@ function exportTankDefinition(tankName, parent, label, guns) {
     const gunString = `{
       POSITION: [${gun.length / 2}, ${gun.width / 2}, 1, ${gun.x / 2}, ${gun.y / 2}, ${angle}, ${gun.firedelay}],
       PROPERTIES: {
-        SHOOT_SETTINGS: combineStats([g.basic]),
+        SHOOT_SETTINGS: ${gun.shootSettings},
         TYPE: ${gun.type},
       }
     }`;
