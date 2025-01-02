@@ -79,7 +79,15 @@ label{
     width: auto;
 }
 .menu[data-custom-ui="3"] {
-    left:400px;
+    left:370px;
+    width: 150px;
+}
+.menu[data-custom-ui="4"] {
+    left:532px;
+    width: 150px;
+}
+.menu[data-custom-ui="5"] {
+    left:694px;
     width: 150px;
 }
 
